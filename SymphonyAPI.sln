@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymphonyAPIClient", "SymphonyAPIClient\SymphonyAPIClient.csproj", "{035663A4-6844-4328-9A34-F44C7BDA2B5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymphonyRestAPI.Test", "SymphonyRestAPI.Test\SymphonyRestAPI.Test.csproj", "{65D6F1F6-650E-4758-B132-856ADD900944}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{035663A4-6844-4328-9A34-F44C7BDA2B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{035663A4-6844-4328-9A34-F44C7BDA2B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{035663A4-6844-4328-9A34-F44C7BDA2B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{035663A4-6844-4328-9A34-F44C7BDA2B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65D6F1F6-650E-4758-B132-856ADD900944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D6F1F6-650E-4758-B132-856ADD900944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D6F1F6-650E-4758-B132-856ADD900944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D6F1F6-650E-4758-B132-856ADD900944}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1B99423D-0D19-4F29-B446-8B2DD4E23F47}
+	EndGlobalSection
+EndGlobal
