@@ -64,15 +64,6 @@ namespace SymphonyAPI.Symphony
     }
 
 
-    public class loginRequest
-    {
-        public string secretKey { get; set; }
-        public string appKey { get; set; }
-        public string source { get; set; }
-    }
-
-
-
     public class SymphonyOrderResponse
     {
         public string type { get; set; }
@@ -476,7 +467,7 @@ namespace SymphonyAPI.Symphony
 
 
 
-//Copied from Documentation
+    //Copied from Documentation
 
     //public class ExchangeMessages
     //{
@@ -494,7 +485,7 @@ namespace SymphonyAPI.Symphony
     //}
 
 
-//get from after execution
+    //get from after execution
 
     public class ExchangeMessages
     {

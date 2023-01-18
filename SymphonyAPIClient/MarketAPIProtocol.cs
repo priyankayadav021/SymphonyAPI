@@ -9,6 +9,7 @@ using System.Text.Json.Nodes;
 using SymphonyAPI;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+//using System.Web.Helpers;
 
 namespace SymphonyAPI
 {
@@ -17,7 +18,7 @@ namespace SymphonyAPI
         public RestClient RestClient { get; }
         private string _token = "";
         private readonly string _tokenHeader = "authorization";
-        public MarketAPIProtocol() 
+        public MarketAPIProtocol()
         {
             RestClient = new RestClient("https://xts.rmoneyindia.co.in:3000/marketdata");
         }
@@ -59,13 +60,30 @@ namespace SymphonyAPI
             return _loginResponse;
         }
 
+
+        public marketSessionEnd sessionEnd()
+        {
+            var request = new RestRequest("/auth/logout", RestSharp.Method.Delete);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _logout = JsonConvert.DeserializeObject<marketSessionEnd>(response.Content);
+            return _logout;
+        }
+
         public ClientConfigResponse GetClientConfigResponse()
         {
             var request = new RestRequest("/config/clientConfig", RestSharp.Method.Get);
             var response = ExecuteRestRequest(request);
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                
+
                 throw new Exception(
                     $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
                 );
@@ -73,6 +91,32 @@ namespace SymphonyAPI
 
             var _ClientConfigResponse = JsonConvert.DeserializeObject<ClientConfigResponse>(response.Content);
             return _ClientConfigResponse;
+        }
+
+        public QuoteResponse GetQuote()
+        {
+            var request = new RestRequest("/instruments/quotes", RestSharp.Method.Post);
+            //Instrument[] inst;
+            //inst[0].exchangeInstrumentID = 22;
+            //inst[0].exchangeSegment = 2;
+            //var serialized = JsonConvert.SerializeObject(inst);
+            //var payload = new JsonObject
+            //{
+            //    { "instruments", serialized},
+            //    { "xtsMessageCode", 1502},
+            //    { "publishFormat", "JSON" }
+            //};
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getQuote = JsonConvert.DeserializeObject<QuoteResponse>(response.Content);
+            return _getQuote;
         }
 
 
@@ -90,6 +134,111 @@ namespace SymphonyAPI
 
             var _GetSeriesResponse = JsonConvert.DeserializeObject<GetSeriesResponse>(response.Content);
             return _GetSeriesResponse;
+        }
+
+
+
+        public GetEquitySymbol getEquitySymbol(string exchgSegment, string series, string symbol)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/instruments/instrument/symbol?exchangeSegment={0}&series={1}&symbol={2}", exchgSegment, series, symbol), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getEquitySymbol = JsonConvert.DeserializeObject<GetEquitySymbol>(response.Content);
+            return _getEquitySymbol;
+        }
+
+
+
+        public GetExpiryDate getExpiryDate(string exchgSegment, string series, string symbol)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/instruments/instrument/expiryDate?exchangeSegment={0}&series={1}&symbol={2}", exchgSegment, series, symbol), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getExpiryDate = JsonConvert.DeserializeObject<GetExpiryDate>(response.Content);
+            return _getExpiryDate;
+        }
+
+
+
+        public GetFutureSymbol getFutureSymbol(string exchgSegment, string series, string symbol, string expiry)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "instruments/instrument/futureSymbol?exchangeSegment={0}&series={1}&symbol={2}&expiryDate={3}", exchgSegment, series, symbol, expiry), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getFutureSymbol = JsonConvert.DeserializeObject<GetFutureSymbol>(response.Content);
+            return _getFutureSymbol;
+        }
+
+
+        public GetOptionSymbol getOptionSymbol(string exchgSegment, string series, string symbol, string expiry, string optionType, string strikePrice)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/instruments/instrument/optionSymbol?exchangeSegment={0}&series={1}&symbol={2}&expiryDate={3}&optionType={4}&strikePrice={5}", exchgSegment, series, symbol, expiry, optionType, strikePrice), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getOptionSymbol = JsonConvert.DeserializeObject<GetOptionSymbol>(response.Content);
+            return _getOptionSymbol;
+        }
+
+
+        public GetOptionType getOptionType(string exchgSegment, string series, string symbol, string expiry)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "instruments/instrument/optionType?exchangeSegment={0}&series={1}&symbol={2}&expiryDate={3}", exchgSegment, series, symbol, expiry), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getOptionType = JsonConvert.DeserializeObject<GetOptionType>(response.Content);
+            return _getOptionType;
+        }
+
+
+        public IndexList getIndexList(string exchgSegment)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/instruments/indexlist?exchangeSegment={0}", exchgSegment), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _IndexList = JsonConvert.DeserializeObject<IndexList>(response.Content);
+            return _IndexList;
         }
     }
 }

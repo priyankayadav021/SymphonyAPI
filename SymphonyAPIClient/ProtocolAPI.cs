@@ -128,6 +128,61 @@ namespace SymphonyAPI
             return _loginResponse;
         }
 
+        /// <summary>
+        /// LogOff from Symphony api
+        /// </summary>
+        /// <returns>OrderResponse</returns>
+        public logOffResponse endSession()
+        {
+            var request = new RestRequest("/interactive/user/session", Method.Delete);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception(
+                    $"SymphonyBrokerage.CancelOrder: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+            var _endSession = JsonConvert.DeserializeObject<logOffResponse>(response.Content);
+            return _endSession;
+        }
+
+        /// <summary>
+        /// userProfileResponse from Symphony api
+        /// </summary>
+        /// <returns>OrderResponse</returns>
+        public userProfileResponse getUserProfile(string ClientID)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/interactive/user/profile?clientID={0}", ClientID), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception(
+                    $"SymphonyBrokerage.CancelOrder: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+            var _userprofile = JsonConvert.DeserializeObject<userProfileResponse>(response.Content);
+            return _userprofile;
+        }
+
+
+        /// <summary>
+        /// userBalanceResponse from Symphony api
+        /// </summary>
+        /// <returns>OrderResponse</returns>
+        public userBalanceResponse getuserBalance(string ClientID)
+        {
+            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/interactive/user/balance?clientID={0}", ClientID), Method.Get);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception(
+                    $"SymphonyBrokerage.CancelOrder: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+            var _userBalance = JsonConvert.DeserializeObject<userBalanceResponse>(response.Content);
+            return _userBalance;
+        }
+
         ///// <summary>
         ///// Cancels the order, Invokes cancelOrder call from Symphony api
         ///// </summary>
