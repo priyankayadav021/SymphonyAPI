@@ -61,7 +61,7 @@ namespace SymphonyAPI
         }
 
 
-        public marketSessionEnd sessionEnd()
+        public marketSessionEnd marketsessionEnd()
         {
             var request = new RestRequest("/auth/logout", RestSharp.Method.Delete);
             var response = ExecuteRestRequest(request);
@@ -96,16 +96,16 @@ namespace SymphonyAPI
         public QuoteResponse GetQuote()
         {
             var request = new RestRequest("/instruments/quotes", RestSharp.Method.Post);
-            //Instrument[] inst;
-            //inst[0].exchangeInstrumentID = 22;
-            //inst[0].exchangeSegment = 2;
-            //var serialized = JsonConvert.SerializeObject(inst);
-            //var payload = new JsonObject
-            //{
-            //    { "instruments", serialized},
-            //    { "xtsMessageCode", 1502},
-            //    { "publishFormat", "JSON" }
-            //};
+            Instrument[] inst = { new Instrument { exchangeInstrumentID = 94191, exchangeSegment = 2 } };
+            //inst[0] = x;
+            var serialized = JsonConvert.SerializeObject(inst);
+            var payload = new JsonObject
+            {
+                { "instruments", serialized},
+                { "xtsMessageCode", 1502},
+                { "publishFormat", "JSON" }
+            };
+            request.AddBody(payload);
             var response = ExecuteRestRequest(request);
             if (response.StatusCode != HttpStatusCode.OK)
             {
@@ -119,6 +119,81 @@ namespace SymphonyAPI
             return _getQuote;
         }
 
+
+
+
+        public MarketStreamResponse getMarketStream()
+        {
+            var request = new RestRequest("/instruments/subscription", RestSharp.Method.Post);
+            Instrument[] inst = { new Instrument { exchangeInstrumentID = 94191, exchangeSegment = 2 }, new Instrument { exchangeInstrumentID = 94191, exchangeSegment = 2 } };
+            var serialized = JsonConvert.SerializeObject(inst);
+            var payload = new JsonObject
+            {
+                { "instruments", serialized},
+                { "xtsMessageCode", 1502}
+            };
+            request.AddBody(payload);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getMarketStream = JsonConvert.DeserializeObject<MarketStreamResponse>(response.Content);
+            return _getMarketStream;
+        }
+
+
+
+        public MarketStreamUnsubsResponse getMarketStreamUnsubscribe()
+        {
+            var request = new RestRequest("/instruments/subscription", RestSharp.Method.Put);
+            Instrument[] inst = { new Instrument { exchangeInstrumentID = 22, exchangeSegment = 2 }, };
+            var serialized = JsonConvert.SerializeObject(inst);
+            var payload = new JsonObject
+            {
+                { "instruments", serialized},
+                { "xtsMessageCode", 1502}
+            };
+            request.AddBody(payload);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getMarketStreamUnsubs = JsonConvert.DeserializeObject<MarketStreamUnsubsResponse>(response.Content);
+            return _getMarketStreamUnsubs;
+        }
+
+        public MasterResponse getMasterResponse()
+        {
+            var request = new RestRequest("/instruments/master", RestSharp.Method.Post);
+            var exchangeSegmentList = new List<string>(){"NSECD","NSECM","NSEFO"};
+            var payload = JsonConvert.SerializeObject(exchangeSegmentList);
+            var temp = new JsonObject
+            {
+                {"exchangeSegmentList", payload}
+            };
+            request.AddBody(temp);
+            var response = ExecuteRestRequest(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+
+                throw new Exception(
+                    $"SymphonyBrokerage.getTradebook: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
+                );
+            }
+
+            var _getMarketStream = JsonConvert.DeserializeObject<MasterResponse>(response.Content);
+            return _getMarketStream;
+        }
 
         public GetSeriesResponse getSeriesResponse(string exchgSegment)
         {

@@ -455,36 +455,6 @@ namespace SymphonyAPI.Symphony
 
 
 
-
-    public class SymphonyLogoutResponse
-    {
-        public string type { get; set; }
-        public string code { get; set; }
-        public string description { get; set; }
-        public string result { get; set; }
-    }
-
-
-
-
-    //Copied from Documentation
-
-    //public class ExchangeMessages
-    //{
-    //    public string type { get; set; }
-    //    public string code { get; set; }
-    //    public string description { get; set; }
-    //    public Result[] result { get; set; }
-
-    //    public class Result
-    //    {
-    //        public string ExchangeSegment { get; set; }
-    //        public string ExchangeTimeStamp { get; set; }
-    //        public string BroadcastMessage { get; set; }
-    //    }
-    //}
-
-
     //get from after execution
 
     public class ExchangeMessages

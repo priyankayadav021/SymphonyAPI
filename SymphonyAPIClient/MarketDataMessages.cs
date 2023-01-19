@@ -159,13 +159,7 @@ namespace SymphonyAPI
     }
 
 
-
     public class QuoteResponse
-    {
-        public QuoteResponseClass[] Property { get; set; }
-    }
-
-    public class QuoteResponseClass
     {
         public string type { get; set; }
         public string code { get; set; }
@@ -176,15 +170,38 @@ namespace SymphonyAPI
     public class QuoteResponseResult
     {
         public int mdp { get; set; }
-        public Quotelist quoteList { get; set; }
-        public string listQuotes { get; set; }
+        public string quotesList { get; set; }
+        public object[] listQuotes { get; set; }
     }
 
-    public class Quotelist
-    {
-        public int exchangeSegment { get; set; }
-        public int exchangeInstrumentID { get; set; }
-    }
+
+    //public class QuoteResponse
+    //{
+    //    public QuoteResponseClass[] Property { get; set; }
+    //}
+
+    //public class QuoteResponseClass
+    //{
+    //    public string type { get; set; }
+    //    public string code { get; set; }
+    //    public string description { get; set; }
+    //    public QuoteResponseResult result { get; set; }
+    //}
+
+
+
+    //public class QuoteResponseResult
+    //{
+    //    public int mdp { get; set; }
+    //    public Quotelist quoteList { get; set; }
+    //    public string listQuotes { get; set; }
+    //}
+
+    //public class Quotelist
+    //{
+    //    public int exchangeSegment { get; set; }
+    //    public int exchangeInstrumentID { get; set; }
+    //}
 
 
 
@@ -335,5 +352,93 @@ namespace SymphonyAPI
         public int exchangeSegment { get; set; }
         public string[] indexList { get; set; }
     }
+
+
+
+
+
+
+    //public class MarketStreamResponse
+    //{ 
+    //    public string type { get; set; }
+    //    public string code { get; set; }
+    //    public string description { get; set; }
+    //    public MarketStreamResult result { get; set; }
+    //}
+
+    //public class MarketStreamResult
+    //{
+    //    public int mdp { get; set; }
+    //    public Quotelist quoteList { get; set; }
+    //    public string listQuotes { get; set; }
+    //    public int Remaining_Subscription_Count { get; set; }
+    //}
+
+    //public class Quotelist
+    //{
+    //    public int exchangeSegment { get; set; }
+    //    public int exchangeInstrumentID { get; set; }
+    //}
+
+
+
+
+    public class MarketStreamResponse
+    {
+        public string type { get; set; }
+        public string code { get; set; }
+        public string description { get; set; }
+        public MarketStreamResult result { get; set; }
+    }
+
+    public class MarketStreamResult
+    {
+        public int mdp { get; set; }
+        public Quoteslist[] quotesList { get; set; }
+        public object[] listQuotes { get; set; }
+        public int Remaining_Subscription_Count { get; set; }
+    }
+
+    public class Quoteslist
+    {
+        public int exchangeSegment { get; set; }
+        public int exchangeInstrumentID { get; set; }
+    }
+
+
+
+
+
+
+    public class MarketStreamUnsubsResponse
+    {
+        public string type { get; set; }
+        public string code { get; set; }
+        public string description { get; set; }
+        public MarketStreamUnsubsResult result { get; set; }
+    }
+
+    public class MarketStreamUnsubsResult
+    {
+        public int xtsMessageCode { get; set; }
+        public Unsublist[] unsubList { get; set; }
+    }
+
+    public class Unsublist
+    {
+        public int exchangeSegment { get; set; }
+        public int exchangeInstrumentID { get; set; }
+    }
+
+
+
+
+    public class MasterResponse
+    {
+        public string type { get; set; }
+        public string code { get; set; }
+        public object result { get; set; }
+    }
+
 
 }

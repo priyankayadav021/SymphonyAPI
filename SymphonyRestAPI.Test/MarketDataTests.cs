@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SymphonyRestAPI.Test
 {
     [TestFixture]
-    public class MarketData
+    public class MarketDataTests
     {
 
         MarketAPIProtocol marketdata = new MarketAPIProtocol();
@@ -22,9 +22,9 @@ namespace SymphonyRestAPI.Test
             // TODO: use configuration API to get secrets
             var config = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
 
-            login = marketdata.Authorize(config["appSecret"], config["appKey"], config["loginSource"]);
+            login = marketdata.Authorize(config["mappSecret"], config["mappKey"], config["mloginSource"]);
             Console.WriteLine(login.result.token);
-            Assert.Pass();
+            //Assert.Pass();
         }
 
         [Test]
@@ -43,12 +43,19 @@ namespace SymphonyRestAPI.Test
         }
 
 
-        [Test]
-        public void sessionEnd_test()
+        [OneTimeTearDown]
+        public void marketsessionEnd_test()
         {
-            marketSessionEnd logout = marketdata.sessionEnd();
+            marketSessionEnd logout = marketdata.marketsessionEnd();
             Console.WriteLine(logout.description);
 
+        }
+
+        [Test]
+        public void getQuote_test()
+        {
+            QuoteResponse getQuote = marketdata.GetQuote();  //not checked
+            Console.WriteLine(getQuote.result.listQuotes);
         }
 
 
@@ -97,5 +104,32 @@ namespace SymphonyRestAPI.Test
             IndexList expiry = marketdata.getIndexList("1");
             Console.WriteLine(expiry.result.indexList[0]);
         }
+
+
+        [Test]
+        public void getMarketStream_test()
+        {
+            MarketStreamResponse marketStream = marketdata.getMarketStream();
+            for(int i=0;i< marketStream.result.quotesList.Length;i++)
+                Console.WriteLine(marketStream.result.quotesList[i].exchangeInstrumentID);
+        }
+
+
+        [Test]
+        public void getMarketStreamUnsubs_test()
+        {
+            MarketStreamUnsubsResponse marketStream = marketdata.getMarketStreamUnsubscribe();
+            Console.WriteLine(marketStream.result.unsubList[0].exchangeInstrumentID);
+        }
+
+
+
+        [Test]
+        public void getMasterResponse_test()   //Like contract
+        {
+            MasterResponse master = marketdata.getMasterResponse();
+            Console.WriteLine(master.result);
+        }
+
     }
 }

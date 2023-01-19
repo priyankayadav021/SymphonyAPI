@@ -6,7 +6,7 @@ using SymphonyAPI.Symphony;
 namespace SymphonyRestAPI.Test
 {
     [TestFixture]
-    public class Tests
+    public class TradeAPITests
     {
         SymphonyBrokerageRestAPIClient sym = new SymphonyBrokerageRestAPIClient();
         loginResponse login;
@@ -19,13 +19,13 @@ namespace SymphonyRestAPI.Test
 
             login = sym.Authorize(config["appSecret"], config["appKey"], config["loginSource"]);
             Console.WriteLine(login.result.token);
-            Assert.Pass();
+            //Assert.Pass();
         }
 
-        [Test]
-        public void endSession_test()
+        [OneTimeTearDown]
+        public void sessionEnd_test()
         {
-            logOffResponse logoff = sym.endSession();
+            SymphonysessionEndResponse logoff = sym.sessionEnd();
             Console.WriteLine(logoff);
             Assert.Pass();
         }
@@ -52,6 +52,7 @@ namespace SymphonyRestAPI.Test
             Console.WriteLine(ExchgStatus.result.marketStatus[0].exchangeTradingSession);
         }
 
+        [Test]
         public void getTradebook_test()
         {
             TradeBookResponse trades = sym.getTradebook();
@@ -59,7 +60,7 @@ namespace SymphonyRestAPI.Test
                 Console.WriteLine(trades.result[0].LoginID);
         }
 
-
+        [Test]
         public void GetOrderBook()
         {
             OrderBookResponse orderResponse = sym.GetOrderBook();
@@ -69,15 +70,15 @@ namespace SymphonyRestAPI.Test
             }
         }
 
-
+        [Test]
         public void GetHoldings_test()
         {
             HoldingsResponse holdingResponse = sym.GetHoldings(login.result.userID);
             Console.WriteLine(holdingResponse.result.ClientId);
         }
 
-
-        public void GetExchangeMessages_test()
+        [Test]
+        public void GetExchangeMessages_test()  //parametrized test
         {
             ExchangeMessages message = sym.GetExchangeMessages("NSECM");
             if (message.result.messageList.Length > 0)

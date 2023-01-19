@@ -128,23 +128,6 @@ namespace SymphonyAPI
             return _loginResponse;
         }
 
-        /// <summary>
-        /// LogOff from Symphony api
-        /// </summary>
-        /// <returns>OrderResponse</returns>
-        public logOffResponse endSession()
-        {
-            var request = new RestRequest("/interactive/user/session", Method.Delete);
-            var response = ExecuteRestRequest(request);
-            if (response.StatusCode != HttpStatusCode.OK)
-            {
-                throw new Exception(
-                    $"SymphonyBrokerage.CancelOrder: request failed: [{(int)response.StatusCode}] {response.StatusDescription}, Content: {response.Content}, ErrorMessage: {response.ErrorMessage}"
-                );
-            }
-            var _endSession = JsonConvert.DeserializeObject<logOffResponse>(response.Content);
-            return _endSession;
-        }
 
         /// <summary>
         /// userProfileResponse from Symphony api
@@ -457,11 +440,11 @@ namespace SymphonyAPI
         //    throw new NotSupportedException($"SymphonyBrokerage.ConvertOrderDirection: Unsupported order direction: {orderDirection}");
         //}
 
-        public SymphonyLogoutResponse logout()
+        public SymphonysessionEndResponse sessionEnd()
         {
-            var request = new RestRequest(string.Format(CultureInfo.InvariantCulture, "/interactive/user/session"), RestSharp.Method.Delete);
+            var request = new RestRequest("/interactive/user/session", RestSharp.Method.Delete);
             var response = ExecuteRestRequest(request);
-            var logoutResponse = JsonConvert.DeserializeObject<SymphonyLogoutResponse>(response.Content);
+            var logoutResponse = JsonConvert.DeserializeObject<SymphonysessionEndResponse>(response.Content);
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 throw new Exception(
