@@ -9,7 +9,10 @@ using System.Text.Json.Nodes;
 using SymphonyAPI;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-//using System.Web.Helpers;
+using System.Net.Sockets;
+using System.Net.Security;
+using System.IO;
+//using WebSocket4Net;
 
 namespace SymphonyAPI
 {
@@ -18,9 +21,10 @@ namespace SymphonyAPI
         public RestClient RestClient { get; }
         private string _token = "";
         private readonly string _tokenHeader = "authorization";
+        
         public MarketAPIProtocol()
         {
-            RestClient = new RestClient("https://xts.rmoneyindia.co.in:3000/marketdata");
+            RestClient = new RestClient("https://xts.rmoneyindia.co.in:3000/marketdata");            
         }
 
         private void SignRequest(RestSharp.RestRequest request)
@@ -57,6 +61,7 @@ namespace SymphonyAPI
             }
             var _loginResponse = JsonConvert.DeserializeObject<marketLoginResponse>(response.Content);
             _token = _loginResponse.result.token;
+            //SocketConnection(_loginResponse.result.userID);
             return _loginResponse;
         }
 
@@ -122,15 +127,16 @@ namespace SymphonyAPI
 
 
 
-        public MarketStreamResponse getMarketStream()
+        public MarketStreamResponse getMarketStream(string exchangeInstrumentID, string exchangeSegment)
         {
+            //NSECD|11666|2|USDJPY|USDJPY23JAN146PE|OPTCUR|USDJPY-OPTCUR|3302700011666|18.38|14.42|10001|0.01|1|629.1999999999999|3100100000043||2023-01-27T14:30:00|146|4
             var request = new RestRequest("/instruments/subscription", RestSharp.Method.Post);
-            Instrument[] inst = { new Instrument { exchangeInstrumentID = 94191, exchangeSegment = 2 }, new Instrument { exchangeInstrumentID = 94191, exchangeSegment = 2 } };
+            Instrument[] inst = { new Instrument { exchangeInstrumentID = int.Parse(exchangeInstrumentID), exchangeSegment = int.Parse(exchangeSegment) } };
             var serialized = JsonConvert.SerializeObject(inst);
             var payload = new JsonObject
             {
                 { "instruments", serialized},
-                { "xtsMessageCode", 1502}
+                { "xtsMessageCode", 1501}
             };
             request.AddBody(payload);
             var response = ExecuteRestRequest(request);

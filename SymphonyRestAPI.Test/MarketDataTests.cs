@@ -1,30 +1,25 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SymphonyAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using SymphonyAPIClient;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SymphonyRestAPI.Test
 {
     [TestFixture]
     public class MarketDataTests
     {
-
-        MarketAPIProtocol marketdata = new MarketAPIProtocol();
+        readonly MarketAPIProtocol marketdata = new MarketAPIProtocol();
         marketLoginResponse login;
 
         [OneTimeSetUp]
         public void Authorize_test()
         {
-            // TODO: use configuration API to get secrets
-            var config = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+            //use configuration API to get secrets
+           // var config = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
 
-            login = marketdata.Authorize(config["mappSecret"], config["mappKey"], config["mloginSource"]);
-            Console.WriteLine(login.result.token);
-            //Assert.Pass();
+            //login = marketdata.Authorize(config["mappSecret"], config["mappKey"], config["mloginSource"]);
+            //Console.WriteLine(login.result.token);
         }
 
         [Test]
@@ -43,7 +38,7 @@ namespace SymphonyRestAPI.Test
         }
 
 
-        [OneTimeTearDown]
+        [Test]
         public void marketsessionEnd_test()
         {
             marketSessionEnd logout = marketdata.marketsessionEnd();
@@ -109,9 +104,12 @@ namespace SymphonyRestAPI.Test
         [Test]
         public void getMarketStream_test()
         {
-            MarketStreamResponse marketStream = marketdata.getMarketStream();
-            for(int i=0;i< marketStream.result.quotesList.Length;i++)
-                Console.WriteLine(marketStream.result.quotesList[i].exchangeInstrumentID);
+            //MarketStreamResponse marketStream = marketdata.getMarketStream("22","1");
+            //for(int i=0;i< marketStream.result.quotesList.Length;i++)
+            //Console.WriteLine(marketStream.result.quotesList[i].exchangeInstrumentID);
+            //NSECD|11666|2|USDJPY|USDJPY23JAN146PE|OPTCUR|USDJPY-OPTCUR|3302700011666|18.38|14.42|10001|0.01|1|629.1999999999999|3100100000043||2023-01-27T14:30:00|146|4
+            Main data = new Main();
+            data.SocketConnection();
         }
 
 
@@ -127,9 +125,22 @@ namespace SymphonyRestAPI.Test
         [Test]
         public void getMasterResponse_test()   //Like contract
         {
-            MasterResponse master = marketdata.getMasterResponse();
-            Console.WriteLine(master.result);
+            MasterResponse contract = marketdata.getMasterResponse();
+            string file = @"D:/Contract.txt";
+            FileStream fs = new FileStream(file, FileMode.Create);
+            using (StreamWriter write = new StreamWriter(fs))
+            {
+                write.WriteLine(contract.result);
+            }
+            fs.Close();
+           // Console.WriteLine(master.result);
         }
 
+        //[Test]
+        //[TestCase("I10230")]
+        //public void SocketConnection_test(string userID)
+        //{
+        //    marketdata.SocketConnection(userID);
+        //}
     }
 }
