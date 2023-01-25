@@ -38,7 +38,9 @@ namespace SymphonyAPIClient
                 {"token", login.result.token},
                 {"userID", login.result.userID},
                 {"publishFormat" , "JSON" },
-                {"broadcastMode" , "Full" }
+                {"broadcastMode" , "Full" },
+                {"transport", "websocket" },
+                {"EIO", "3" }
             };
             socket.Connect();
             socket.On("connect", (data) =>
