@@ -12,8 +12,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="SocketIOClient" Version="3.0.7" />
-    <PackageReference Include="SocketIoClientDotNet" Version="1.0.2-beta1" />
-    <PackageReference Include="WebSocket4Net" Version="0.15.2" />
+    <PackageReference Include="SocketIoClientDotNet.Standard" Version="0.0.6" />
   </ItemGroup>
 
 </Project>

@@ -1,22 +1,19 @@
 ﻿using Newtonsoft.Json.Linq;
 using SymphonyAPI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using SocketIOClient;
-using Quobject.SocketIoClientDotNet.Client;
-
+using Newtonsoft.Json;
 
 namespace SymphonyAPIClient
 {
     public class Main
     {
-        public Quobject.SocketIoClientDotNet.Client.Socket socket = IO.Socket("https://xts.rmoneyindia.co.in:3000/marketdata/socket.io");
+        //public SocketIO socket =  new SocketIO("https://xts.rmoneyindia.co.in:3000/marketdata/socket.io/");
         public bool isConnected = false;
         MarketAPIProtocol market;
         
@@ -28,67 +25,54 @@ namespace SymphonyAPIClient
 
         public void SocketConnection()
         {
-
+           
             var config = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
 
             var login = market.Authorize(config["mappSecret"], config["mappKey"], config["mloginSource"]);
-
-            var payload = new JsonObject
-                {
-                {"token", login.result.token},
-                {"userID", login.result.userID},
-                {"publishFormat" , "JSON" },
-                {"broadcastMode" , "Full" },
-                {"transport", "websocket" },
-                {"EIO", "3" }
-            };
-            socket.Connect();
+            string url = "https://xts.rmoneyindia.co.in:3000/?token" + login.result.token + "&userID=" + login.result.userID + "&publishFormat=JSON&broadcastMode=Full";
+            var socket = new SocketIO(url, new SocketIOOptions
+            {
+                Path = "/marketdata/socket.io",
+                //Query = new List<KeyValuePair<string, string>>
+                //    {
+                //        new KeyValuePair<string, string>("token",  login.result.token),
+                //        new KeyValuePair<string, string>("userID", login.result.userID),
+                //        new KeyValuePair<string, string>("publishFormat" , "JSON"),
+                //        new KeyValuePair<string, string>("broadcastMode" , "Full")
+                //    },
+                Transport = SocketIOClient.Transport.TransportProtocol.WebSocket
+            });
             socket.On("connect", (data) =>
             {
+                Console.WriteLine("connected");
                 Console.WriteLine(data.ToString());
-                isConnected = true;
+                //isConnected = true;
             });
-             
-            socket.Emit("connect", payload);
-            getsubscribe();
             socket.On("1501-json-full", (data) =>
             {
-                updateParams(data.ToString());
+                Console.WriteLine(data);
             });
-
+            Console.WriteLine(socket);
+            socket.ConnectAsync();
+            Console.WriteLine(socket.Connected);
+            getsubscribe();
 
         }
-        
+
         public void SocketDisconnect()
         {
-            if(isConnected) socket.Close();
+            //if(isConnected) socket.Close();
         }
         
 
         public void getsubscribe()
         {
-            string file = @"D:/Contract.txt";
-            int count = 0;
-            if (File.Exists(file))
+            string[] exchangeinstID = { "151289", "58459", "104002", "58489", "53427" };
+            for (int k = 0; k < 5; k++)
             {
-                string[] contract = File.ReadAllLines(file);
-                foreach (string contractLine in contract)
-                {
-                    string[] words = contractLine.Split(new char[] { ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (words.Length > 0)
-                    { 
-                        if (words[5] == "OPTSTK" && words[0] == "NSEFO")
-                        {
-                            MarketStreamResponse response = market.getMarketStream(words[1], words[2]);
-                            for (int i = 0; i < response.result.listQuotes.Length; i++)
-                                Console.WriteLine(response.result.listQuotes[0]);
-                            count++;
-                        }
-                        if (count > 10) break;
-                    }
-
-                }
-
+                MarketStreamResponse response = market.getMarketStream(exchangeinstID[k],"2");
+                //for (int i = 0; i < response.result.listQuotes.Length; i++)
+                //    Console.WriteLine(response.result.listQuotes[0]);
             }
         }
 
@@ -96,6 +80,7 @@ namespace SymphonyAPIClient
         public void updateParams(string data)
         {
             //update params
+            Console.WriteLine(data);
         }
     }
 }
